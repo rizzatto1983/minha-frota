@@ -43,6 +43,7 @@ footer{font-size:11px;color:var(--muted);text-align:center;margin:22px 0 0}
   </section>
   <section id="main" class="hidden">
     <header><div class="logo">🚘</div><div style="flex:1"><div class="brand">Minha Frota</div><div class="sub">Seus veículos em um só lugar</div></div><button class="btn secondary" id="logoutBtn">Sair</button></header>
+    <div class="actions" style="margin:0 0 12px"><button class="btn secondary" id="backupBtn">Fazer backup</button><button class="btn secondary" id="restoreBtn">Restaurar backup</button><input id="restoreFile" type="file" accept="application/json,.json" class="hidden"></div>
     <div class="tabs" id="vehicleTabs"></div>
     <div id="vehicleArea"></div>
     <footer>Protótipo de interface • Os dados ficam neste navegador neste protótipo.</footer>
@@ -82,6 +83,47 @@ function show(id){$('login').classList.toggle('hidden',id!=='login');$('main').c
 function login(){const u=$('username').value.trim(),p=$('password').value;if(!db.user){alert('Crie uma conta local primeiro.');return}if(u!==db.user||p!==db.pass){alert('Usuário ou senha incorretos.');return}show('main');render()}
 $('createBtn').onclick=()=>{const u=$('username').value.trim(),p=$('password').value;if(!u||!p){alert('Preencha usuário e senha para criar a conta.');return}if(db.user){alert('Já existe uma conta neste protótipo. Entre com ela.');return}db.user=u;db.pass=p;save();alert('Conta criada neste navegador. Agora toque em Entrar. Não use senha real neste protótipo.')}
 $('loginBtn').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('logoutBtn').onclick=()=>show('login');
+$('backupBtn').onclick=downloadBackup;
+$('restoreBtn').onclick=()=>$('restoreFile').click();
+$('restoreFile').addEventListener('change',restoreBackup);
+function downloadBackup(){
+  try{
+    const content=JSON.stringify({app:'Minha Frota',version:1,exportedAt:new Date().toISOString(),data:db},null,2);
+    const blob=new Blob([content],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='minha-frota-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    alert('Backup criado. Guarde o arquivo em um local seguro.');
+  }catch(e){alert('Não foi possível criar o backup neste navegador.');}
+}
+function restoreBackup(event){
+  const file=event.target.files&&event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(reader.result);
+      const restored=parsed&&parsed.data?parsed.data:parsed;
+      if(!restored||!Array.isArray(restored.vehicles)||typeof restored!=='object')throw new Error('Formato inválido');
+      if(!confirm('Restaurar este backup substituirá os dados atuais neste navegador. Faça um backup dos dados atuais antes de continuar. Deseja prosseguir?'))return;
+      db={user:restored.user??null,pass:restored.pass??null,vehicles:restored.vehicles,selected:restored.selected??(restored.vehicles[0]?.id||null),section:restored.section||'Resumo'};
+      save();alert('Backup restaurado. O aplicativo será atualizado.');
+      if(db.user){$('username').value=db.user;show('login');}else{show('login');}
+      render();
+    }catch(e){alert('Não foi possível restaurar. Selecione um arquivo de backup válido do Minha Frota.');}
+    finally{$('restoreFile').value='';}
+  };
+  reader.readAsText(file);
+}
+function deleteCurrentVehicle(){
+  const v=current();if(!v)return;
+  const vehicleName=v.nickname||v.model||v.type;
+  const typedPassword=prompt('Para autorizar a exclusão de "'+vehicleName+'", digite a senha da sua conta Minha Frota:');
+  if(typedPassword===null)return;
+  if(typedPassword!==db.pass){alert('Senha incorreta. O veículo não foi apagado.');return;}
+  if(!confirm('Confirma a exclusão de "'+vehicleName+'" e de todos os registros de manutenção dele? Esta ação não pode ser desfeita, a menos que você tenha um backup.'))return;
+  db.vehicles=db.vehicles.filter(item=>item.id!==v.id);
+  db.selected=db.vehicles.length?db.vehicles[0].id:null;db.section='Resumo';save();render();
+}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function render(){renderTabs();renderVehicle()}
 function renderTabs(){let out='';db.vehicles.forEach(v=>out+=`<button class="tab ${v.id===db.selected?'active':''}" data-id="${v.id}"><span class="ico">${TYPES[v.type]?.icon||'🚘'}</span><small>${escapeHtml(v.nickname||v.model||v.type)}</small></button>`);out+=`<button class="tab" id="addVehicle"><span class="ico">＋</span><small>Adicionar</small></button>`;$('vehicleTabs').innerHTML=out;$('vehicleTabs').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{db.selected=b.dataset.id;db.section='Resumo';save();render()});$('addVehicle').onclick=vehicleForm}
@@ -89,8 +131,8 @@ function vehicleForm(){ $('vehicleArea').innerHTML=`<div class="card"><h2>Adicio
 function current(){return db.vehicles.find(v=>v.id===db.selected)}
 function renderVehicle(){let v=current();if(!v){$('vehicleArea').innerHTML=`<div class="card empty"><div style="font-size:42px">🚘</div><h2>Sua frota começa aqui</h2><p>Cadastre seu primeiro veículo para registrar dados e manutenções.</p><button class="btn" id="firstAdd">＋ Adicionar veículo</button></div>`;$('firstAdd').onclick=vehicleForm;return}
 let nav=['Resumo','Dados do veículo','Manutenções','Próximas revisões','Despesas'];let navHtml=nav.map(s=>`<button class="${db.section===s?'active':''}" data-section="${s}">${s}</button>`).join('');
-$('vehicleArea').innerHTML=`<div class="card"><div class="row"><div><div class="sub">${escapeHtml(v.type.toUpperCase())}</div><h1>${escapeHtml(v.nickname)}</h1><div class="muted">${escapeHtml([v.brand,v.model,v.year].filter(Boolean).join(' • ')||'Complete os dados do veículo')}</div></div><div style="font-size:42px;text-align:right">${TYPES[v.type]?.icon||'🚘'}</div></div><div class="sectionnav">${navHtml}</div><div id="sectionContent"></div></div><div class="actions"><button class="btn" id="newMaintenance">＋ Registrar manutenção</button><button class="btn secondary" id="editVehicle">Editar dados</button></div>`;
-$('vehicleArea').querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{db.section=b.dataset.section;renderVehicle()});$('newMaintenance').onclick=maintenanceForm;$('editVehicle').onclick=()=>vehicleFormEdit(v);renderSection(v)}
+$('vehicleArea').innerHTML=`<div class="card"><div class="row"><div><div class="sub">${escapeHtml(v.type.toUpperCase())}</div><h1>${escapeHtml(v.nickname)}</h1><div class="muted">${escapeHtml([v.brand,v.model,v.year].filter(Boolean).join(' • ')||'Complete os dados do veículo')}</div></div><div style="font-size:42px;text-align:right">${TYPES[v.type]?.icon||'🚘'}</div></div><div class="sectionnav">${navHtml}</div><div id="sectionContent"></div></div><div class="actions"><button class="btn" id="newMaintenance">＋ Registrar manutenção</button><button class="btn secondary" id="editVehicle">Editar dados</button><button class="btn danger" id="deleteVehicle">Apagar veículo</button></div>`;
+$('vehicleArea').querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{db.section=b.dataset.section;renderVehicle()});$('newMaintenance').onclick=maintenanceForm;$('editVehicle').onclick=()=>vehicleFormEdit(v);$('deleteVehicle').onclick=deleteCurrentVehicle;renderSection(v)}
 function renderSection(v){let c=$('sectionContent');if(db.section==='Resumo'){let spent=v.maintenances.reduce((s,m)=>s+(Number(m.cost)||0),0);c.innerHTML=`<div class="stats"><div class="stat"><span class="muted">Quilometragem</span><strong>${v.odometer?Number(v.odometer).toLocaleString('pt-BR')+' km':'Não informada'}</strong></div><div class="stat"><span class="muted">Registros</span><strong>${v.maintenances.length}</strong></div><div class="stat"><span class="muted">Gasto registrado</span><strong>${spent.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong></div><div class="stat"><span class="muted">Próximas revisões</span><strong>${v.maintenances.filter(m=>m.nextDate||m.nextKm).length}</strong></div></div><p class="muted">Use “Registrar manutenção” para guardar serviços, peças, produtos e próximos lembretes.</p>`}
 else if(db.section==='Dados do veículo'){c.innerHTML=`<h3>Dados cadastrados</h3>${[['Tipo',v.type],['Marca',v.brand],['Modelo',v.model],['Ano de fabricação',v.year],['Ano-modelo',v.modelYear],['Placa',v.plate],['Quilometragem',v.odometer? v.odometer+' km':''],...Object.entries(v.extra||{})].map(([k,val])=>`<div class="listitem"><div class="muted">${escapeHtml(k)}</div><strong>${escapeHtml(val||'Não informado')}</strong></div>`).join('')}`}
 else if(db.section==='Manutenções'){c.innerHTML=v.maintenances.length?v.maintenances.slice().reverse().map(m=>maintenanceCard(m)).join(''):`<div class="empty">Nenhuma manutenção registrada ainda.</div>`}
