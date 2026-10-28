@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#176b50">
+<title>Minha Frota — Protótipo</title>
+<style>
+:root{--green:#176b50;--green2:#218363;--bg:#f3f6f4;--card:#fff;--ink:#1e2924;--muted:#6c7972;--line:#dce5df;--warn:#fff2d7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:760px;margin:auto;min-height:100dvh;padding:16px 14px 32px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px}.logo{width:46px;height:46px;border-radius:14px;background:var(--green);color:white;display:grid;place-items:center;font-size:24px}.brand{font-weight:800;font-size:22px}.sub{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 3px 12px #183b2610}
+h1{font-size:23px;margin:4px 0 6px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:var(--muted);font-size:13px}
+label{display:block;font-size:13px;font-weight:650;margin:10px 0 5px}input,select,textarea{width:100%;border:1px solid #cfdad2;border-radius:10px;padding:11px;background:#fff;color:var(--ink)}textarea{min-height:76px;resize:vertical}
+.btn{border:0;background:var(--green);color:white;padding:12px 15px;border-radius:11px;font-weight:700}.btn.secondary{background:#e7f0eb;color:var(--green)}.btn.ghost{background:transparent;color:var(--green);padding:8px}.btn.danger{background:#a83b36}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}.hidden{display:none!important}
+.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px}.tab{min-width:104px;border:1px solid var(--line);background:white;border-radius:13px;padding:10px;text-align:center;color:var(--ink)}.tab.active{background:var(--green);border-color:var(--green);color:white}.tab .ico{font-size:23px;display:block}.tab small{display:block;margin-top:3px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#f3f7f4;border-radius:12px;padding:12px}.stat strong{display:block;font-size:17px;margin-top:5px}
+.sectionnav{display:flex;gap:7px;overflow:auto;margin:12px 0}.sectionnav button{white-space:nowrap;border:1px solid var(--line);background:#fff;padding:9px 11px;border-radius:999px}.sectionnav button.active{background:#dceee4;border-color:#b5d5c2;color:#14563f;font-weight:700}
+.listitem{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}.pill{font-size:11px;border-radius:99px;padding:4px 8px;background:#e3f3e9;color:#176b50;font-weight:700;display:inline-block}.pill.orange{background:var(--warn);color:#885a00}.empty{padding:22px 10px;text-align:center;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.loginbg{background:linear-gradient(160deg,#dcece2,#f3f6f4 52%);border-radius:22px;padding:20px 16px}.hero{height:155px;border-radius:16px;background:linear-gradient(180deg,#b8d9d1,#e8f2e9);position:relative;overflow:hidden;margin:12px 0 18px}.sun{position:absolute;width:42px;height:42px;border-radius:50%;background:#f5d998;right:22px;top:20px}.hill{position:absolute;bottom:-60px;width:120%;height:130px;border-radius:50% 50% 0 0;background:#7ab394;left:-10%}.hill2{position:absolute;bottom:-75px;width:100%;height:130px;border-radius:50% 50% 0 0;background:#4c8d6d;right:-20%}.vehicles{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:14px;font-size:48px;filter:drop-shadow(0 4px 2px #254b3520)}
+footer{font-size:11px;color:var(--muted);text-align:center;margin:22px 0 0}
+@media(min-width:600px){.app{padding:24px}.hero{height:190px}.vehicles{font-size:60px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section id="login">
+    <div class="loginbg card">
+      <div style="text-align:center;padding:6px 0">
+        <div class="logo" style="margin:auto;width:60px;height:60px;font-size:31px">🚘</div>
+        <h1>Minha Frota</h1><div class="sub">Seu controle pessoal de veículos</div>
+      </div>
+      <div class="hero"><div class="sun"></div><div class="hill"></div><div class="hill2"></div><div class="vehicles"><span>🏍️</span><span>🚙</span></div></div>
+      <div id="loginForm">
+        <label for="username">Usuário</label><input id="username" autocomplete="username" placeholder="Escolha seu usuário">
+        <label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha">
+        <div class="actions"><button class="btn" style="flex:1" id="loginBtn">Entrar</button><button class="btn secondary" id="createBtn">Criar conta</button></div>
+        <button class="btn ghost hidden" id="bioBtn">◎ Entrar com biometria (futura integração)</button>
+        <p class="muted">Protótipo inicial. Ainda não use uma senha real: o acesso local e a proteção definitiva serão implementados na versão Android.</p>
+      </div>
+    </div>
+  </section>
+  <section id="main" class="hidden">
+    <header><div class="logo">🚘</div><div style="flex:1"><div class="brand">Minha Frota</div><div class="sub">Seus veículos em um só lugar</div></div><button class="btn secondary" id="logoutBtn">Sair</button></header>
+    <div class="actions" style="margin:0 0 12px"><button class="btn secondary" id="backupBtn">Fazer backup</button><button class="btn secondary" id="restoreBtn">Restaurar backup</button><input id="restoreFile" type="file" accept="application/json,.json" class="hidden"></div>
+    <div class="tabs" id="vehicleTabs"></div>
+    <div id="vehicleArea"></div>
+    <footer>Protótipo de interface • Os dados ficam neste navegador neste protótipo.</footer>
+  </section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let db={user:null,pass:null,vehicles:[],selected:null,section:'Resumo'};
+const TYPES={
+ 'Carro':{icon:'🚗',fields:['Combustível','Motor']},
+ 'Caminhonete':{icon:'🛻',fields:['Combustível','Motor']},
+ 'Caminhão':{icon:'🚚',fields:['Combustível','Motor','Capacidade de carga']},
+ 'Motocicleta':{icon:'🏍️',fields:['Cilindrada','Combustível']},
+ 'Scooter':{icon:'🛵',fields:['Cilindrada','Combustível']},
+ 'Elétrico autopropelido':{icon:'🛴',fields:['Tipo de bateria','Capacidade da bateria (Wh)','Autonomia informada']},
+ 'Outro':{icon:'🚘',fields:['Tipo de propulsão']}
+};
+const MAINT={
+ 'Troca de óleo':['Marca do óleo','Viscosidade / SAE','Especificação API/JASO ou outra','Quantidade','Marca do filtro','Código do filtro'],
+ 'Filtros':['Tipo de filtro','Marca','Modelo / código','Especificação'],
+ 'Bateria':['Marca da bateria','Modelo','Código','Capacidade (Ah)','Tensão (V)','Garantia'],
+ 'Pneus':['Marca','Modelo','Medida','Posição','Índice de carga/velocidade'],
+ 'Freios':['Componente','Marca','Modelo / código','Fluido / especificação'],
+ 'Transmissão':['Componente','Marca','Modelo / código','Especificação do fluido'],
+ 'Suspensão e direção':['Componente','Marca','Modelo / código'],
+ 'Correia / corrente':['Componente','Marca','Modelo / código','Medida / especificação'],
+ 'Sistema elétrico':['Componente','Marca','Modelo / código'],
+ 'Arrefecimento':['Fluido','Marca','Especificação','Quantidade'],
+ 'Ar-condicionado':['Serviço / componente','Marca','Especificação do fluido'],
+ 'Revisão geral':['Itens verificados','Observações'],
+ 'Reparo / defeito':['Defeito relatado','Diagnóstico','Reparo realizado','Peças utilizadas'],
+ 'Inspeção / outro':['Descrição do serviço','Detalhes']
+};
+function save(){try{localStorage.setItem('minhaFrotaPrototype',JSON.stringify(db))}catch(e){}}
+function load(){try{let x=JSON.parse(localStorage.getItem('minhaFrotaPrototype'));if(x)db={...db,...x}}catch(e){}}
+function show(id){$('login').classList.toggle('hidden',id!=='login');$('main').classList.toggle('hidden',id!=='main')}
+function login(){const u=$('username').value.trim(),p=$('password').value;if(!db.user){alert('Crie uma conta local primeiro.');return}if(u!==db.user||p!==db.pass){alert('Usuário ou senha incorretos.');return}show('main');render()}
+$('createBtn').onclick=()=>{const u=$('username').value.trim(),p=$('password').value;if(!u||!p){alert('Preencha usuário e senha para criar a conta.');return}if(db.user){alert('Já existe uma conta neste protótipo. Entre com ela.');return}db.user=u;db.pass=p;save();alert('Conta criada neste navegador. Agora toque em Entrar. Não use senha real neste protótipo.')}
+$('loginBtn').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('logoutBtn').onclick=()=>show('login');
+$('backupBtn').onclick=downloadBackup;
+$('restoreBtn').onclick=()=>$('restoreFile').click();
+$('restoreFile').addEventListener('change',restoreBackup);
+function downloadBackup(){
+  try{
+    const content=JSON.stringify({app:'Minha Frota',version:1,exportedAt:new Date().toISOString(),data:db},null,2);
+    const blob=new Blob([content],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='minha-frota-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    alert('Backup criado. Guarde o arquivo em um local seguro.');
+  }catch(e){alert('Não foi possível criar o backup neste navegador.');}
+}
+function restoreBackup(event){
+  const file=event.target.files&&event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(reader.result);
+      const restored=parsed&&parsed.data?parsed.data:parsed;
+      if(!restored||!Array.isArray(restored.vehicles)||typeof restored!=='object')throw new Error('Formato inválido');
+      if(!confirm('Restaurar este backup substituirá os dados atuais neste navegador. Faça um backup dos dados atuais antes de continuar. Deseja prosseguir?'))return;
+      db={user:restored.user??null,pass:restored.pass??null,vehicles:restored.vehicles,selected:restored.selected??(restored.vehicles[0]?.id||null),section:restored.section||'Resumo'};
+      save();alert('Backup restaurado. O aplicativo será atualizado.');
+      if(db.user){$('username').value=db.user;show('login');}else{show('login');}
+      render();
+    }catch(e){alert('Não foi possível restaurar. Selecione um arquivo de backup válido do Minha Frota.');}
+    finally{$('restoreFile').value='';}
+  };
+  reader.readAsText(file);
+}
+function deleteCurrentVehicle(){
+  const v=current();if(!v)return;
+  const vehicleName=v.nickname||v.model||v.type;
+  const typedPassword=prompt('Para autorizar a exclusão de "'+vehicleName+'", digite a senha da sua conta Minha Frota:');
+  if(typedPassword===null)return;
+  if(typedPassword!==db.pass){alert('Senha incorreta. O veículo não foi apagado.');return;}
+  if(!confirm('Confirma a exclusão de "'+vehicleName+'" e de todos os registros de manutenção dele? Esta ação não pode ser desfeita, a menos que você tenha um backup.'))return;
+  db.vehicles=db.vehicles.filter(item=>item.id!==v.id);
+  db.selected=db.vehicles.length?db.vehicles[0].id:null;db.section='Resumo';save();render();
+}
+function reminderStatus(m,v){
+ const today=new Date();today.setHours(0,0,0,0);
+ const days=Number(m.alertDays??15),kmMargin=Number(m.alertKm??500);
+ const currentKm=String(v.odometer??'').trim()===''?null:Number(v.odometer);
+ const targetKm=String(m.nextKm??'').trim()===''?null:Number(m.nextKm);
+ const date=m.nextDate?new Date(m.nextDate+'T00:00:00'):null;
+ const remainingDays=date?Math.ceil((date-today)/86400000):null;
+ const remainingKm=targetKm!==null&&currentKm!==null?targetKm-currentKm:null;
+ const overdue=(remainingDays!==null&&remainingDays<0)||(remainingKm!==null&&remainingKm<0);
+ const due=(remainingDays!==null&&remainingDays===0)||(remainingKm!==null&&remainingKm===0);
+ const soon=(remainingDays!==null&&remainingDays>=0&&remainingDays<=days)||(remainingKm!==null&&remainingKm>=0&&remainingKm<=kmMargin);
+ return {level:overdue?'overdue':due?'due':soon?'soon':'ok',remainingDays,remainingKm};
+}
+function reminderText(m,v){
+ const st=reminderStatus(m,v);
+ const parts=[];
+ if(st.remainingDays!==null)parts.push(st.remainingDays<0?`${-st.remainingDays} dia(s) após a data`:st.remainingDays===0?'Data prevista hoje':`Faltam ${st.remainingDays} dia(s)`);
+ if(st.remainingKm!==null)parts.push(st.remainingKm<0?`${-st.remainingKm.toLocaleString('pt-BR')} km além do previsto`:st.remainingKm===0?'Quilometragem atingida':`Faltam ${st.remainingKm.toLocaleString('pt-BR')} km`);
+ else if(m.nextKm)parts.push('Atualize a quilometragem do veículo para acompanhar');
+ return parts.join(' • ');
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){renderTabs();renderVehicle()}
+function renderTabs(){let out='';db.vehicles.forEach(v=>out+=`<button class="tab ${v.id===db.selected?'active':''}" data-id="${v.id}"><span class="ico">${TYPES[v.type]?.icon||'🚘'}</span><small>${escapeHtml(v.nickname||v.model||v.type)}</small></button>`);out+=`<button class="tab" id="addVehicle"><span class="ico">＋</span><small>Adicionar</small></button>`;$('vehicleTabs').innerHTML=out;$('vehicleTabs').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{db.selected=b.dataset.id;db.section='Resumo';save();render()});$('addVehicle').onclick=vehicleForm}
+function vehicleForm(){ $('vehicleArea').innerHTML=`<div class="card"><h2>Adicionar veículo</h2><label>Tipo de veículo *</label><select id="vtype">${Object.keys(TYPES).map(t=>`<option>${t}</option>`).join('')}</select><div class="row"><div><label>Apelido do veículo *</label><input id="vnick" placeholder="Ex.: Etios, Lander, Caminhonete"></div><div><label>Marca</label><input id="vbrand" placeholder="Ex.: Toyota"></div></div><div class="row"><div><label>Modelo</label><input id="vmodel" placeholder="Modelo"></div><div><label>Ano de fabricação</label><input id="vyear" type="number" placeholder="2022"></div></div><div class="row"><div><label>Ano-modelo</label><input id="vmodelyear" type="number" placeholder="2023"></div><div><label>Placa (opcional)</label><input id="vplate" placeholder="ABC1D23"></div></div><label>Quilometragem atual (se houver)</label><input id="vodometer" type="number" placeholder="Ex.: 15000"><div id="typeFields"></div><div class="actions"><button class="btn" id="saveVehicle">Salvar veículo</button><button class="btn secondary" id="cancelVehicle">Cancelar</button></div></div>`;const update=()=>{$('typeFields').innerHTML=(TYPES[$('vtype').value].fields||[]).map((f,i)=>`<label>${f}</label><input data-extra="${i}" placeholder="Opcional">`).join('')};$('vtype').onchange=update;update();$('cancelVehicle').onclick=render;$('saveVehicle').onclick=()=>{let type=$('vtype').value,nick=$('vnick').value.trim();if(!nick){alert('Informe um nome para identificar o veículo.');return}let extra={};$('typeFields').querySelectorAll('input').forEach((el,i)=>extra[TYPES[type].fields[i]]=el.value.trim());let v={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),type,nickname:nick,brand:$('vbrand').value.trim(),model:$('vmodel').value.trim(),year:$('vyear').value,modelYear:$('vmodelyear').value,plate:$('vplate').value.trim(),odometer:$('vodometer').value,extra,maintenances:[]};db.vehicles.push(v);db.selected=v.id;db.section='Resumo';save();render()}}
+function current(){return db.vehicles.find(v=>v.id===db.selected)}
+function renderVehicle(){let v=current();if(!v){$('vehicleArea').innerHTML=`<div class="card empty"><div style="font-size:42px">🚘</div><h2>Sua frota começa aqui</h2><p>Cadastre seu primeiro veículo para registrar dados e manutenções.</p><button class="btn" id="firstAdd">＋ Adicionar veículo</button></div>`;$('firstAdd').onclick=vehicleForm;return}
+let nav=['Resumo','Dados do veículo','Manutenções','Próximas revisões','Despesas'];let navHtml=nav.map(s=>`<button class="${db.section===s?'active':''}" data-section="${s}">${s}</button>`).join('');
+$('vehicleArea').innerHTML=`<div class="card"><div class="row"><div><div class="sub">${escapeHtml(v.type.toUpperCase())}</div><h1>${escapeHtml(v.nickname)}</h1><div class="muted">${escapeHtml([v.brand,v.model,v.year].filter(Boolean).join(' • ')||'Complete os dados do veículo')}</div></div><div style="font-size:42px;text-align:right">${TYPES[v.type]?.icon||'🚘'}</div></div><div class="sectionnav">${navHtml}</div><div id="sectionContent"></div></div><div class="actions"><button class="btn" id="newMaintenance">＋ Registrar manutenção</button><button class="btn secondary" id="editVehicle">Editar dados</button><button class="btn danger" id="deleteVehicle">Apagar veículo</button></div>`;
+$('vehicleArea').querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{db.section=b.dataset.section;renderVehicle()});$('newMaintenance').onclick=maintenanceForm;$('editVehicle').onclick=()=>vehicleFormEdit(v);$('deleteVehicle').onclick=deleteCurrentVehicle;renderSection(v)}
+function renderSection(v){let c=$('sectionContent');if(db.section==='Resumo'){let spent=v.maintenances.reduce((s,m)=>s+(Number(m.cost)||0),0);c.innerHTML=`<div class="stats"><div class="stat"><span class="muted">Quilometragem</span><strong>${v.odometer?Number(v.odometer).toLocaleString('pt-BR')+' km':'Não informada'}</strong></div><div class="stat"><span class="muted">Registros</span><strong>${v.maintenances.length}</strong></div><div class="stat"><span class="muted">Gasto registrado</span><strong>${spent.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong></div><div class="stat"><span class="muted">Próximas revisões</span><strong>${v.maintenances.filter(m=>(m.nextDate||m.nextKm)&&reminderStatus(m,v).level!=='ok').length} aviso(s)</strong></div></div><p class="muted">Abra “Próximas revisões” para consultar os alertas por data e quilometragem. Os avisos são exibidos no aplicativo, não como notificações do celular.</p><p class="muted">Use “Registrar manutenção” para guardar serviços, peças, produtos e próximos lembretes.</p>`}
+else if(db.section==='Dados do veículo'){c.innerHTML=`<h3>Dados cadastrados</h3>${[['Tipo',v.type],['Marca',v.brand],['Modelo',v.model],['Ano de fabricação',v.year],['Ano-modelo',v.modelYear],['Placa',v.plate],['Quilometragem',v.odometer? v.odometer+' km':''],...Object.entries(v.extra||{})].map(([k,val])=>`<div class="listitem"><div class="muted">${escapeHtml(k)}</div><strong>${escapeHtml(val||'Não informado')}</strong></div>`).join('')}`}
+else if(db.section==='Manutenções'){c.innerHTML=v.maintenances.length?v.maintenances.slice().reverse().map(m=>maintenanceCard(m)).join(''):`<div class="empty">Nenhuma manutenção registrada ainda.</div>`}
+else if(db.section==='Próximas revisões'){
+ let arr=v.maintenances.filter(m=>m.nextDate||m.nextKm);
+ const order={overdue:0,due:1,soon:2,ok:3};arr.sort((a,b)=>order[reminderStatus(a,v).level]-order[reminderStatus(b,v).level]);
+ c.innerHTML=arr.length?arr.map(m=>{
+  const status=reminderStatus(m,v),label={overdue:'Prazo ultrapassado',due:'Manutenção prevista para agora',soon:'Atenção: manutenção próxima',ok:'Programada'}[status.level];
+  const cls=status.level==='overdue'||status.level==='due'?'orange':'';
+  return `<div class="listitem"><span class="pill ${cls}">${label}</span><h3 style="margin-top:10px">${escapeHtml(m.service)}</h3><p class="muted">Próxima data: ${escapeHtml(m.nextDate?m.nextDate.split('-').reverse().join('/'):'Não definida')} • Quilometragem: ${escapeHtml(m.nextKm?Number(m.nextKm).toLocaleString('pt-BR')+' km':'Não definida')}</p><p>${escapeHtml(reminderText(m,v))}</p><p class="muted">Avisar ${escapeHtml(m.alertDays??15)} dias ou ${escapeHtml(m.alertKm??500)} km antes</p>${m.calendar?'<p class="muted">Google Agenda: integração ainda não disponível.</p>':''}</div>`;
+ }).join(''):`<div class="empty">Nenhuma próxima revisão programada.</div>`;
+} 
+else {let spent=v.maintenances.reduce((s,m)=>s+(Number(m.cost)||0),0);c.innerHTML=`<div class="stat"><span class="muted">Total registrado em manutenções</span><strong>${spent.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong></div>`}}
+function maintenanceCard(m){return `<div class="listitem"><div class="row"><div><strong>${escapeHtml(m.service)}</strong><div class="muted">${escapeHtml(m.date||'Sem data')} ${m.km?'• '+escapeHtml(m.km)+' km':''}</div></div><span class="pill ${m.kind==='Corretiva'?'orange':''}">${escapeHtml(m.kind)}</span></div>${m.brand||m.spec?`<p class="muted">${escapeHtml([m.brand,m.spec,m.code].filter(Boolean).join(' • '))}</p>`:''}<p>${escapeHtml(m.notes||'')}</p><strong>${Number(m.cost||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong>${m.nextDate||m.nextKm?`<p class="muted">Próxima: ${escapeHtml(m.nextDate||'data não definida')} ${m.nextKm?'• '+escapeHtml(m.nextKm)+' km':''}</p>`:''}</div>`}
+function maintenanceForm(){let v=current();let services=Object.keys(MAINT);$('vehicleArea').innerHTML=`<div class="card"><h2>Registrar manutenção</h2><div class="muted">${escapeHtml(v.nickname)}</div><label>Tipo *</label><select id="mkind"><option>Preventiva</option><option>Corretiva</option></select><label>Serviço *</label><select id="mservice">${services.map(s=>`<option>${s}</option>`).join('')}</select><div id="dynamicFields"></div><div class="row"><div><label>Data</label><input id="mdate" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div><label>Quilometragem / uso</label><input id="mkm" type="number" placeholder="Opcional"></div></div><div class="row"><div><label>Custo total (R$)</label><input id="mcost" type="number" step="0.01" placeholder="0,00"></div><div><label>Oficina / local</label><input id="mshop" placeholder="Opcional"></div></div><label>Observações</label><textarea id="mnotes" placeholder="Detalhes adicionais"></textarea><h3 style="margin-top:16px">Próxima manutenção (opcional)</h3><div class="row"><div><label>Data prevista</label><input id="mnextdate" type="date"></div><div><label>Quilometragem prevista</label><input id="mnextkm" type="number" min="0" placeholder="Opcional"></div></div><div class="row"><div><label>Avisar quantos dias antes?</label><input id="malertdays" type="number" min="0" step="1" value="15"></div><div><label>Avisar quantos km antes?</label><input id="malertkm" type="number" min="0" step="1" value="500"></div></div><p class="muted">Os avisos aparecem em Próximas revisões quando você abrir o aplicativo. Para alertas por km, mantenha a quilometragem do veículo atualizada.</p><label><input id="mcalendar" type="checkbox" style="width:auto;margin-right:6px"> Quero adicionar um evento ao Google Agenda depois de salvar</label><div class="actions"><button class="btn" id="saveMaintenance">Salvar manutenção</button><button class="btn secondary" id="cancelMaintenance">Cancelar</button></div><p class="muted">A integração real com o Google Agenda ainda será implementada na versão Android.</p></div>`;
+const update=()=>{let s=$('mservice').value;let fields=MAINT[s]||[];$('dynamicFields').innerHTML=fields.map((f,i)=>`<label>${f}</label><input data-field="${escapeHtml(f)}" placeholder="Preencher se aplicável">`).join('')};$('mservice').onchange=update;update();$('cancelMaintenance').onclick=render;$('saveMaintenance').onclick=()=>{if(['malertdays','malertkm'].some(id=>!Number.isInteger(Number($(id).value))||Number($(id).value)<0||$(id).value.trim()==='')){alert('Informe valores inteiros iguais ou maiores que zero para os avisos.');return}let fields={};$('dynamicFields').querySelectorAll('input').forEach(el=>fields[el.dataset.field]=el.value.trim());let vals=Object.values(fields).filter(Boolean);let m={kind:$('mkind').value,service:$('mservice').value,date:$('mdate').value,km:$('mkm').value,cost:$('mcost').value,shop:$('mshop').value.trim(),notes:$('mnotes').value.trim(),nextDate:$('mnextdate').value,nextKm:$('mnextkm').value,alertDays:$('malertdays').value,alertKm:$('malertkm').value,calendar:$('mcalendar').checked,fields,brand:fields['Marca do óleo']||fields['Marca da bateria']||fields['Marca']||'',spec:fields['Viscosidade / SAE']||fields['Especificação API/JASO ou outra']||fields['Especificação']||'',code:fields['Código']||fields['Código do filtro']||''};m.notes=[m.shop?'Local: '+m.shop:'',m.notes, ...Object.entries(fields).filter(([k,val])=>val).map(([k,val])=>k+': '+val)].filter(Boolean).join(' | ');v.maintenances.push(m);if(m.km)v.odometer=m.km;save();db.section='Manutenções';renderVehicle()}}
+function vehicleFormEdit(v){vehicleForm();$('vtype').value=v.type;$('vtype').disabled=true;$('vnick').value=v.nickname;$('vbrand').value=v.brand;$('vmodel').value=v.model;$('vyear').value=v.year;$('vmodelyear').value=v.modelYear;$('vplate').value=v.plate;$('vodometer').value=v.odometer;$('typeFields').querySelectorAll('input').forEach((el,i)=>el.value=v.extra?.[TYPES[v.type].fields[i]]||'');$('saveVehicle').textContent='Salvar alterações';$('saveVehicle').onclick=()=>{v.nickname=$('vnick').value.trim()||v.nickname;v.brand=$('vbrand').value.trim();v.model=$('vmodel').value.trim();v.year=$('vyear').value;v.modelYear=$('vmodelyear').value;v.plate=$('vplate').value.trim();v.odometer=$('vodometer').value;$('typeFields').querySelectorAll('input').forEach((el,i)=>v.extra[TYPES[v.type].fields[i]]=el.value.trim());save();render()}}
+load();show(db.user?'login':'login');if(db.user)$('username').value=db.user;
+</script>
+</body></html>
